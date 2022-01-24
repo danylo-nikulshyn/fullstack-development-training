@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users xmlns="http://www.demandware.com/xml/impex/user/2007-09-05">
+    <user login="danylo.nikulshyn@osf.digital" enabled-flag="true">
+        <credentials>
+            <external-id>0fa96eca-693f-4294-a6a1-64aa16785354</external-id>
+        </credentials>
+        <profile>
+            <first-name>Danylo</first-name>
+            <last-name>Nikulshyn</last-name>
+            <email>danylo.nikulshyn@osf.digital</email>
+            <phone-business>+380687589422</phone-business>
+            <phone-mobile>+380687589422</phone-mobile>
+            <preferred-data-locale>none</preferred-data-locale>
+        </profile>
+    </user>
+
+</users>
