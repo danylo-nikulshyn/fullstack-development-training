@@ -18,8 +18,34 @@ var pageMetaData = require('*/cartridge/scripts/middleware/pageMetaData');
 
 server.get('Show', cache.applyPromotionSensitiveCache, consentTracking.consent, function (req, res, next) {
     var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
+    var ProductSearchModel = require('dw/catalog/ProductSearchModel');
+    var searchHelper = require('*/cartridge/scripts/helpers/searchHelpers');
+   
+    var apiProductSearch = new ProductSearchModel();
     var showProductPageHelperResult = productHelper.showProductPage(req.querystring, req.pageMetaData);
+    
+    var breadcrumbsLength = showProductPageHelperResult.breadcrumbs.length;
+    var productCategoryURL = showProductPageHelperResult.breadcrumbs[breadcrumbsLength - 1].url.toString();
+    var n = productCategoryURL.lastIndexOf('=');
+    var productCategoryID = productCategoryURL.substring(n + 1);
+    
+    apiProductSearch.setCategoryID(productCategoryID);
+
+    var searchResult = searchHelper.search({
+        querystring: {
+            cgid: productCategoryID
+        },
+        pageMetaData: showProductPageHelperResult.product.pageMetaTags[0]
+    }, res);
+
+    var productRecommendationIds = searchResult.productSearch.productIds;
     var productType = showProductPageHelperResult.product.productType;
+    var recommnedationList = productRecommendationIds.map((pId) => {
+        return productHelper.showProductPage({
+            pid: pId.productID
+        }, req.pageMetaData);
+    });
+
     if (!showProductPageHelperResult.product.online && productType !== 'set' && productType !== 'bundle') {
         res.setStatusCode(404);
         res.render('error/notFound');
@@ -30,7 +56,8 @@ server.get('Show', cache.applyPromotionSensitiveCache, consentTracking.consent, 
             resources: showProductPageHelperResult.resources,
             breadcrumbs: showProductPageHelperResult.breadcrumbs,
             canonicalUrl: showProductPageHelperResult.canonicalUrl,
-            schemaData: showProductPageHelperResult.schemaData
+            schemaData: showProductPageHelperResult.schemaData,
+            recommendations: recommnedationList.slice(0, 4)
         });
     }
     next();

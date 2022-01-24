@@ -45,9 +45,9 @@ function setPageMetaTags(pageMetaData, object) {
         return;
     }
 
-    if ('pageMetaTags' in object) {
-        pageMetaData.addPageMetaTags(object.pageMetaTags);
-    }
+    // if ('pageMetaTags' in object) {
+    //     pageMetaData.addPageMetaTags(object.pageMetaTags);
+    // }
 }
 
 module.exports = {

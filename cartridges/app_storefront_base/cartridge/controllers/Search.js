@@ -85,6 +85,12 @@ server.get('ShowAjax', cache.applyShortPromotionSensitiveCache, consentTracking.
     return next();
 }, pageMetaData.computedPageMetaData);
 
+server.get('HelloWorld', function (req, res, next) {
+    var myvariable = "Just a string";
+    res.render("search/newProductDetailPage", { myvariable: myvariable });
+    return next();
+});
+
 server.get('Show', cache.applyShortPromotionSensitiveCache, consentTracking.consent, function (req, res, next) {
     var ProductSearchModel = require('dw/catalog/ProductSearchModel');
     var searchHelper = require('*/cartridge/scripts/helpers/searchHelpers');
