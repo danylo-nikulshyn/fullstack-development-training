@@ -1,6 +1,7 @@
 <isdecorate template="common/layout/page">
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
+        var totalPrice = 0;
         assets.addCss('/css/cart.css');
     </isscript>
 
@@ -54,6 +55,7 @@
                 <!---product cards--->
                 <div class="col-sm-7 col-md-8">
                     <isloop items="${pdict.items}" var="lineItem">
+                        ${totalPrice += lineItem.price.sales.value}
                         <isif condition="${lineItem.productType === 'bundle'}">
                             <isinclude template="cart/productCard/cartBundleCard" />
                         <iselse/>
@@ -64,6 +66,12 @@
                             </isif>
                         </isif>
                     </isloop>
+                    <isif condition="${totalPrice >= 200}">
+                        <div class="cart-total-exceeds">
+                            Your cart total exceeds $200!
+                        </div>
+                    </isif>
+                
                     <isinclude template="cart/cartApproachingDiscount" />
                 </div>
                 <!---totals, and checkout actions--->
@@ -83,7 +91,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <isinclude template="cart/cartRemoveProductModal"/>
         </div>
 
