@@ -1,0 +1,10 @@
+<div class="cart-email">
+    <div>The following product was added to your cart.</div>
+    <div>
+        <img src="${pdict.image}" height="150" alt="Product Image">
+    </div>
+    <div>Product Name: ${pdict.name}</div>
+    <div>Product Description: ${pdict.description}</div>
+    <div>Each - ${pdict.currency} ${pdict.price}</div>
+    <div>Quantity - ${pdict.quantity}</div>
+</div>

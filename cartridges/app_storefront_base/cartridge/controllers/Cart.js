@@ -21,6 +21,32 @@ server.get('MiniCart', server.middleware.include, function (req, res, next) {
     next();
 });
 
+function sendCartNotification(email, product) {
+    var Mail = require("dw/net/Mail");
+    var Template = require("dw/util/Template");
+    var HashMap = require("dw/util/HashMap");
+
+    var mail = new Mail();
+    var template = new Template('email/newCart.isml');
+
+    mail.addTo(email);
+    mail.setSubject("Email Subject");
+    mail.setFrom("noreply@demandware.com");
+
+    var o = new HashMap();
+    o.put("price", product.price.value);
+    o.put("name", product.name);
+    o.put("quantity", product.quantity);
+    o.put("description", product.description);
+    o.put("image", product.image);
+    o.put("currency", product.currency);
+
+    var content = template.render(o);
+
+    mail.setContent(content);
+    mail.send();
+}
+
 server.post('AddProduct', function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var Resource = require('dw/web/Resource');
@@ -114,6 +140,19 @@ server.post('AddProduct', function (req, res, next) {
     }
 
     var reportingURL = cartHelper.getReportingUrlAddToCart(currentBasket, result.error);
+
+    if (currentBasket && currentBasket.customer) {
+        var email = currentBasket.customer.profile.email;
+        
+        sendCartNotification(email, {
+            price: currentBasket.productLineItems[0].basePrice,
+            name: currentBasket.productLineItems[0].productName,
+            quantity: quantity,
+            description: currentBasket.productLineItems[0].product.longDescription.source,
+            image: cartModel.items[0].images.small[0].absURL,
+            currency: currentBasket.currencyCode,
+        });
+    }
 
     res.json({
         reportingURL: reportingURL,
